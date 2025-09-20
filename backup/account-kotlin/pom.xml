@@ -164,11 +164,6 @@
             <artifactId>mapstruct</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
             <scope>provided</scope>
@@ -181,6 +176,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.oshai</groupId>
+            <artifactId>kotlin-logging-jvm</artifactId>
+            <version>7.0.3</version>
         </dependency>
     </dependencies>
 
@@ -252,13 +252,7 @@
                         <configuration>
                             <sourceDirs>
                                 <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
-                                <sourceDir>src/main/kotlin</sourceDir>
                             </sourceDirs>
-                            <annotationProcessorArgs>
-                                <annotationProcessorArg>mapstruct.defaultComponentModel=spring</annotationProcessorArg>
-                                <annotationProcessorArg>mapstruct.defaultInjectionStrategy=constructor</annotationProcessorArg>
-                                <annotationProcessorArg>mapstruct.unmappedTargetPolicy=WARN</annotationProcessorArg>
-                            </annotationProcessorArgs>
                             <annotationProcessorPaths>
                                 <annotationProcessorPath>
                                     <groupId>org.mapstruct</groupId>
@@ -280,14 +274,14 @@
                     </execution>
                     <execution>
                         <id>compile</id>
-                        <phase>process-sources</phase>
+                        <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
                         <configuration>
                             <sourceDirs>
                                 <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
-                                <sourceDir>src/main/kotlin</sourceDir>
+                                <sourceDir>${project.basedir}/target/generated-sources/kapt/main</sourceDir>
                             </sourceDirs>
                         </configuration>
                     </execution>
@@ -305,7 +299,7 @@
                     </execution>
                     <execution>
                         <id>test-compile</id>
-                        <phase>process-test-sources</phase>
+                        <phase>test-compile</phase>
                         <goals>
                             <goal>test-compile</goal>
                         </goals>
