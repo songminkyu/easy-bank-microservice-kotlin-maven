@@ -50,9 +50,9 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Async
     public CompletableFuture<Void> createAccount(CustomerDTO customer) {
-        if (customerRepository.existsByMobileNumber(customer.mobileNumber())) {
+        if (customerRepository.existsByMobileNumber(customer.mobileNumber)) {
             throw new CustomerAlreadyExistsException("Customer already registered with given mobileNumber "
-                + customer.mobileNumber());
+                + customer.mobileNumber);
         }
         var customerEntity = customerMapper.toEntity(customer);
         var savedCustomer = customerRepository.save(customerEntity);
@@ -93,7 +93,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean updateAccount(Long accountNumber, CustomerDTO customer) {
         boolean isUpdated = false;
-        AccountDTO accountDTO = customer.account();
+        AccountDTO accountDTO = customer.account;
         if (accountDTO != null) {
             var account = accountRepository.findById(accountNumber).orElseThrow(
                 () -> new EntityNotFoundException(Account.class, "AccountNumber", accountNumber.toString())
