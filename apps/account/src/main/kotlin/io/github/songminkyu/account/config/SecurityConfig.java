@@ -65,7 +65,8 @@ public class SecurityConfig {
     @Bean
     public Converter<Jwt, AbstractAuthenticationToken> authenticationConverter() {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new JwtGrantedAuthorityConverter());
+        JwtGrantedAuthorityConverter authorityConverter = new JwtGrantedAuthorityConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwt -> authorityConverter.convert(jwt));
         return jwtAuthenticationConverter;
     }
 
