@@ -16,25 +16,22 @@ import io.github.songminkyu.account.mapper.CustomerMapper
 import io.github.songminkyu.account.repository.AccountRepository
 import io.github.songminkyu.account.repository.CustomerRepository
 import io.github.songminkyu.account.service.AccountService
-import lombok.RequiredArgsConstructor
 import org.springframework.cloud.stream.function.StreamBridge
 import org.springframework.data.history.Revision
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import java.util.concurrent.CompletableFuture
-import java.util.function.Consumer
 import java.util.function.Supplier
 
 @Service
-@RequiredArgsConstructor
-class AccountServiceImpl : AccountService {
-    private val accountRepository: AccountRepository? = null
-    private val customerRepository: CustomerRepository? = null
-    private val customerMapper: CustomerMapper? = null
+class AccountServiceImpl(
+    private val accountRepository: AccountRepository,
+    private val customerRepository: CustomerRepository,
+    private val customerMapper: CustomerMapper,
+    private val accountMapper: AccountMapper,
+    private val streamBridge: StreamBridge
+) : AccountService {
 
-    private val accountMapper: AccountMapper? = null
-
-    private val streamBridge: StreamBridge? = null
     private val logger = KotlinLogging.logger {}
 
     override fun test() {
@@ -43,24 +40,22 @@ class AccountServiceImpl : AccountService {
             "test@naver.com", "040440"
         )
         logger.info { "Sending Communication request for the details: $accountsMsgDTO" }
-        val result = streamBridge!!.send("sendCommunication-out-0", accountsMsgDTO)
+        val result = streamBridge.send("sendCommunication-out-0", accountsMsgDTO)
         logger.info { "Is the Communication request successfully triggered ? : $result" }
     }
 
     @Async
     override fun createAccount(customer: CustomerDTO?): CompletableFuture<Void?>? {
-        if (customerRepository!!.existsByMobileNumber(customer?.mobileNumber)) {
+        if (customerRepository.existsByMobileNumber(customer?.mobileNumber)) {
             throw CustomerAlreadyExistsException(
-                "Customer already registered with given mobileNumber "
-                        + customer?.mobileNumber
+                "Customer already registered with given mobileNumber ${customer?.mobileNumber}"
             )
         }
-        val customerEntity = customerMapper!!.toEntity(customer)
-        val savedCustomer = customerRepository.save<Customer>(customerEntity as Customer)
-        return CompletableFuture.completedFuture<Account?>(
-            accountRepository!!.save<Account?>(createNewAccount(savedCustomer))
-        )
-            .thenAccept(Consumer { savedAccount: Account? -> sendCommunication(savedAccount!!, savedCustomer) })
+        val customerEntity = customerMapper.toEntity(customer)
+        val savedCustomer = customerRepository.save(customerEntity as Customer)
+        return CompletableFuture.completedFuture(
+            accountRepository.save(createNewAccount(savedCustomer))
+        ).thenAccept { savedAccount -> sendCommunication(savedAccount, savedCustomer) }
     }
 
     override fun fetchAccount(mobileNumber: String?): CustomerDTO? {

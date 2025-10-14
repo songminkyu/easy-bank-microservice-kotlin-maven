@@ -10,39 +10,36 @@ import io.github.songminkyu.account.mapper.CustomerMapper
 import io.github.songminkyu.account.repository.AccountRepository
 import io.github.songminkyu.account.repository.CustomerRepository
 import io.github.songminkyu.account.service.CustomerService
-import lombok.RequiredArgsConstructor
 import org.springframework.stereotype.Service
-import java.util.function.Supplier
 
 @Service
-@RequiredArgsConstructor
-class CustomerServiceImpl : CustomerService {
-    private val accountRepository: AccountRepository? = null
-    private val customerRepository: CustomerRepository? = null
-    private val cardGraphQlClient: CardGraphQlClient? = null
-    private val loanFeignClient: LoanFeignClient? = null
-
-    private val customerMapper: CustomerMapper? = null
+class CustomerServiceImpl(
+    private val accountRepository: AccountRepository,
+    private val customerRepository: CustomerRepository,
+    private val cardGraphQlClient: CardGraphQlClient,
+    private val loanFeignClient: LoanFeignClient,
+    private val customerMapper: CustomerMapper
+) : CustomerService {
 
     override fun fetchCustomerDetails(mobileNumber: String?, correlationId: String?): CustomerDetailsDTO? {
-        val customer = customerRepository!!.findByMobileNumber(mobileNumber)!!.orElseThrow<EntityNotFoundException?>(
-            Supplier { EntityNotFoundException(Customer::class.java, "mobileNumber", mobileNumber) }
-        )
-        val account =
-            accountRepository!!.findByCustomerId(customer!!.getCustomerId())!!.orElseThrow<EntityNotFoundException?>(
-                Supplier {
-                    EntityNotFoundException(
-                        Account::class.java,
-                        "customerId",
-                        customer.getCustomerId().toString()
-                    )
-                }
-            )
+        val customer = customerRepository.findByMobileNumber(mobileNumber)
+            ?.orElseThrow {
+                EntityNotFoundException(Customer::class.java, "mobileNumber", mobileNumber)
+            }
 
-        val loan = loanFeignClient!!.fetchLoanDetails(correlationId, mobileNumber)
+        val account = accountRepository.findByCustomerId(customer?.getCustomerId())
+            ?.orElseThrow {
+                EntityNotFoundException(
+                    Account::class.java,
+                    "customerId",
+                    customer?.getCustomerId().toString()
+                )
+            }
 
-        val card = cardGraphQlClient!!.fetchCardDetails(mobileNumber)
+        val loan = loanFeignClient.fetchLoanDetails(correlationId, mobileNumber)
 
-        return customerMapper!!.toCustomerDetailsDTO(customer, account, loan, card)
+        val card = cardGraphQlClient.fetchCardDetails(mobileNumber)
+
+        return customerMapper.toCustomerDetailsDTO(customer, account, loan, card)
     }
 }
