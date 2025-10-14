@@ -1,5 +1,6 @@
 package io.github.songminkyu.card.exception
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.InitializingBean
@@ -13,7 +14,7 @@ class ExceptionHandlingAsyncTaskExecutor(
 
     companion object {
         const val EXCEPTION_MESSAGE = "Caught async exception"
-        private val log = LoggerFactory.getLogger(ExceptionHandlingAsyncTaskExecutor::class.java)
+        private val logger = KotlinLogging.logger {}
     }
 
     override fun execute(task: Runnable) {
@@ -47,7 +48,7 @@ class ExceptionHandlingAsyncTaskExecutor(
     }
 
     protected fun handle(e: Exception) {
-        log.error(EXCEPTION_MESSAGE, e)
+        logger.error(e) { "$EXCEPTION_MESSAGE" }
     }
 
     override fun submit(task: Runnable): Future<*> {

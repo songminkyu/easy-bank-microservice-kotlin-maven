@@ -1,5 +1,6 @@
 package io.github.songminkyu.account.service.impl
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.songminkyu.account.constants.AccountConstants
 import io.github.songminkyu.account.constants.Constants.RANDOM
 import io.github.songminkyu.account.dto.AccountDTO
@@ -16,8 +17,6 @@ import io.github.songminkyu.account.repository.AccountRepository
 import io.github.songminkyu.account.repository.CustomerRepository
 import io.github.songminkyu.account.service.AccountService
 import lombok.RequiredArgsConstructor
-import lombok.extern.slf4j.Slf4j
-import org.slf4j.LoggerFactory
 import org.springframework.cloud.stream.function.StreamBridge
 import org.springframework.data.history.Revision
 import org.springframework.scheduling.annotation.Async
@@ -28,7 +27,6 @@ import java.util.function.Supplier
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 class AccountServiceImpl : AccountService {
     private val accountRepository: AccountRepository? = null
     private val customerRepository: CustomerRepository? = null
@@ -37,16 +35,16 @@ class AccountServiceImpl : AccountService {
     private val accountMapper: AccountMapper? = null
 
     private val streamBridge: StreamBridge? = null
-    private val log = LoggerFactory.getLogger(AccountServiceImpl::class.java)
+    private val logger = KotlinLogging.logger {}
 
     override fun test() {
         val accountsMsgDTO = AccountsMsgDTO(
             123123L, "pasongsoso",
             "test@naver.com", "040440"
         )
-        log.info("Sending Communication request for the details: {}", accountsMsgDTO)
+        logger.info { "Sending Communication request for the details: $accountsMsgDTO" }
         val result = streamBridge!!.send("sendCommunication-out-0", accountsMsgDTO)
-        log.info("Is the Communication request successfully triggered ? : {}", result)
+        logger.info { "Is the Communication request successfully triggered ? : $result" }
     }
 
     @Async
@@ -157,8 +155,8 @@ class AccountServiceImpl : AccountService {
             account.getAccountNumber(), customer.getName(),
             customer.getEmail(), customer.getMobileNumber()
         )
-        log.info("Sending Communication request for the details: {}", accountsMsgDTO)
+        logger.info { "Sending Communication request for the details: $accountsMsgDTO" }
         val result = streamBridge!!.send("sendCommunication-out-0", accountsMsgDTO)
-        log.info("Is the Communication request successfully triggered ? : {}", result)
+        logger.info { "Is the Communication request successfully triggered ? : $result" }
     }
 }

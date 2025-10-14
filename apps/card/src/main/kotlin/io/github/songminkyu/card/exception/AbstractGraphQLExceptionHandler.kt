@@ -3,6 +3,7 @@ package io.github.songminkyu.card.exception
 import graphql.GraphQLError
 import graphql.GraphqlErrorBuilder
 import graphql.schema.DataFetchingEnvironment
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.songminkyu.card.exception.ErrorConstants.ERR_INTERNAL_SERVER
 import org.slf4j.LoggerFactory
 import org.springframework.graphql.execution.ErrorType
@@ -11,7 +12,7 @@ abstract class AbstractGraphQLExceptionHandler {
 
     companion object {
         private const val ERROR_LOG_MSG = "An exception occurred, which will cause response"
-        private val log = LoggerFactory.getLogger(AbstractGraphQLExceptionHandler::class.java)
+        private val logger = KotlinLogging.logger {}
     }
 
     protected fun handleValidationException(env: DataFetchingEnvironment, ex: Exception): GraphQLError {
@@ -25,15 +26,15 @@ abstract class AbstractGraphQLExceptionHandler {
     ): GraphQLError {
         return when (errorType) {
             ErrorType.INTERNAL_ERROR -> {
-                log.error(ERROR_LOG_MSG, ex)
+                logger.error(ex) { "$ERROR_LOG_MSG" }
                 createGraphQLError(env, ERR_INTERNAL_SERVER, errorType)
             }
             ErrorType.BAD_REQUEST -> {
-                log.warn(ERROR_LOG_MSG, ex)
+                logger.warn(ex) { "$ERROR_LOG_MSG" }
                 createGraphQLError(env, ex.message ?: "", errorType)
             }
             else -> {
-                log.debug(ERROR_LOG_MSG, ex)
+                logger.debug(ex) { "$ERROR_LOG_MSG" }
                 createGraphQLError(env, ex.message ?: "", errorType)
             }
         }

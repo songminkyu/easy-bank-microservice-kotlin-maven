@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration
 import java.util.function.Consumer
 import io.github.oshai.kotlinlogging.KotlinLogging
 
-private val log = KotlinLogging.logger {}
+private val logger = KotlinLogging.logger {}
 
 @Configuration
 @Slf4j
@@ -19,7 +19,7 @@ class AccountsFunctions {
     @Bean
     fun updateCommunication(accountsService: AccountService): Consumer<Long?> {
         return Consumer { accountNumber: Long? ->
-            log.info("Updating Communication status for the account number : " + accountNumber.toString())
+            logger.info { "Updating Communication status for the account number : " + accountNumber.toString() }
             accountsService.updateCommunicationStatus(accountNumber)
         }
     }
@@ -29,9 +29,9 @@ class AccountsFunctions {
         return Consumer { debeziumEvent: DebeziumEventDetails<Account?>? ->
             val payload = debeziumEvent!!.payload
             when (payload.operation) {
-                Operation.CREATE -> log.info("created account on debezium event: " + payload.after)
-                Operation.UPDATE -> log.info("updated account on debezium event: " + payload.after)
-                Operation.DELETE -> log.info("deleted account on debezium event: " + payload.before)
+                Operation.CREATE -> logger.info { "created account on debezium event: " + payload.after }
+                Operation.UPDATE -> logger.info { "updated account on debezium event: " + payload.after }
+                Operation.DELETE -> logger.info { "deleted account on debezium event: " + payload.before }
             }
         }
     }

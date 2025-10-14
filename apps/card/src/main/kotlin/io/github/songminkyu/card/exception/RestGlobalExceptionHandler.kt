@@ -1,11 +1,11 @@
 package io.github.songminkyu.card.exception
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.songminkyu.card.dto.Violation
 import io.github.songminkyu.card.exception.ErrorConstants.ERR_INTERNAL_SERVER
 import io.github.songminkyu.card.exception.ErrorConstants.ERR_VALIDATION
 import io.github.songminkyu.card.exception.ErrorConstants.PROBLEM_VIOLATION_KEY
 import jakarta.validation.ConstraintViolationException
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
@@ -25,12 +25,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.Objects.requireNonNull
 import java.util.stream.Stream
 
+private val logger = KotlinLogging.logger {}
+
 @RestControllerAdvice
 class RestGlobalExceptionHandler : ResponseEntityExceptionHandler() {
-
-    companion object {
-        private val log = LoggerFactory.getLogger(RestGlobalExceptionHandler::class.java)
-    }
 
     override fun handleHttpMediaTypeNotAcceptable(
         ex: HttpMediaTypeNotAcceptableException,
@@ -215,16 +213,17 @@ class RestGlobalExceptionHandler : ResponseEntityExceptionHandler() {
     ): ResponseEntity<Any> {
         return when {
             status.is5xxServerError -> {
-                log.error("An exception occurred, which will cause a {} response", status, ex)
+                // kotlin-logging의 올바른 메서드 시그니처: 예외를 두 번째 파라미터로
+                logger.error("An exception occurred, which will cause a $status response", ex)
                 val problem = ProblemDetail.forStatusAndDetail(status, ERR_INTERNAL_SERVER)
                 super.handleExceptionInternal(ex, problem, headers, status, request)
             }
             status.is4xxClientError -> {
-                log.warn("An exception occurred, which will cause a {} response", status, ex)
+                logger.warn("An exception occurred, which will cause a $status response",ex)
                 super.handleExceptionInternal(ex, body, headers, status, request)
             }
             else -> {
-                log.debug("An exception occurred, which will cause a {} response", status, ex)
+                logger.debug("An exception occurred, which will cause a $status response",ex)
                 super.handleExceptionInternal(ex, body, headers, status, request)
             }
         }
