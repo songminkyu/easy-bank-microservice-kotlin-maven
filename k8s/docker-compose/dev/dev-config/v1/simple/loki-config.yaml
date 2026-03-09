@@ -1,29 +1,26 @@
+auth_enabled: false
+
 server:
-  http_listen_address: 0.0.0.0
   http_listen_port: 3100
+  grpc_listen_port: 9095
 
 memberlist:
-  join_members: ["read", "write", "backend"]
-  dead_node_reclaim_time: 30s
-  gossip_to_dead_nodes_time: 15s
-  left_ingesters_timeout: 30s
-  bind_addr: ['0.0.0.0']
-  bind_port: 7946
-  gossip_interval: 2s
+  join_members:
+    - loki:7946
 
 schema_config:
   configs:
-    - from: 2023-01-01
+    - from: 2021-08-01
       store: tsdb
       object_store: s3
       schema: v13
       index:
         prefix: index_
         period: 24h
+
 common:
   path_prefix: /loki
   replication_factor: 1
-  compactor_address: http://backend:3100
   storage:
     s3:
       endpoint: minio:9000
@@ -35,10 +32,25 @@ common:
   ring:
     kvstore:
       store: memberlist
+  compactor_address: http://compactor:3100
+  compactor_grpc_address: compactor:9095
+
+compactor:
+  working_directory: /loki/compactor
+  compaction_interval: 10m
+  retention_enabled: true
+  delete_request_store: s3
+
+querier:
+  max_concurrent: 4
+
+limits_config:
+  retention_period: 744h
+  split_queries_by_interval: 24h
+  max_query_parallelism: 32
+  query_timeout: 5m
+
 ruler:
   storage:
     s3:
       bucketnames: loki-ruler
-
-compactor:
-  working_directory: /tmp/compactor
