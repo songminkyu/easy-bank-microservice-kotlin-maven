@@ -36,7 +36,7 @@ public class FallbackController {
                 "error", "Service Unavailable",
                 "message", "The service is temporarily unavailable. Please try again later.",
                 "path", originalPath,
-                "service", determineFailedService(originalPat   h)
+                "service", determineFailedService(originalPath)
         );
 
         log.error("Circuit breaker activated for original path: {}", originalPath);
