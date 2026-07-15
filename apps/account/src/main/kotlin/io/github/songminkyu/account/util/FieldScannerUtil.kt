@@ -1,4 +1,3 @@
-
 package io.github.songminkyu.account.util
 
 import org.springframework.beans.factory.config.BeanDefinition
@@ -8,7 +7,6 @@ import org.springframework.util.Assert
 import org.springframework.util.ReflectionUtils
 import java.lang.reflect.Field
 import java.util.stream.Collectors
-import java.util.stream.Stream
 
 object FieldScannerUtil {
     @JvmStatic
@@ -18,12 +16,13 @@ object FieldScannerUtil {
         fieldAnnotation: Class<out Annotation?>
     ): MutableSet<Field> {
         Assert.notNull(basePackage, "Base package must not be null")
+        val resolvedBasePackage: String = basePackage!!  // Assert.notNull이 이미 보장하므로 안전
         val scanner = ClassPathScanningCandidateComponentProvider(false)
 
         try {
             scanner.addIncludeFilter(AnnotationTypeFilter(classAnnotation))
 
-            return scanner.findCandidateComponents(basePackage)
+            return scanner.findCandidateComponents(resolvedBasePackage)
                 .stream()
                 .map { bd: BeanDefinition ->
                     try {

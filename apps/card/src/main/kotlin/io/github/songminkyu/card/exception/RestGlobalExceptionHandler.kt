@@ -73,7 +73,7 @@ class RestGlobalExceptionHandler : ResponseEntityExceptionHandler() {
         )
         if (CollectionUtils.isEmpty(methods)) {
             return handleExceptionInternal(
-                ex, problem, null,
+                ex, problem, HttpHeaders.EMPTY,
                 HttpStatusCode.valueOf(problem.status), request
             )
         }
@@ -115,9 +115,9 @@ class RestGlobalExceptionHandler : ResponseEntityExceptionHandler() {
         problem.setProperty(PROBLEM_VIOLATION_KEY, violations)
 
         return handleExceptionInternal(
-            ex, problem, null,
+            ex, problem, HttpHeaders.EMPTY,
             HttpStatusCode.valueOf(problem.status), request
-        )
+        ) ?: ResponseEntity.internalServerError().build()
     }
 
     @ExceptionHandler(AuthenticationException::class)
@@ -129,9 +129,9 @@ class RestGlobalExceptionHandler : ResponseEntityExceptionHandler() {
             HttpStatus.UNAUTHORIZED, ex.message
         )
         return handleExceptionInternal(
-            ex, problem, null,
+            ex, problem, HttpHeaders.EMPTY,
             HttpStatusCode.valueOf(problem.status), webRequest
-        )
+        ) ?: ResponseEntity.internalServerError().build()
     }
 
     @ExceptionHandler(AccessDeniedException::class)
@@ -143,9 +143,9 @@ class RestGlobalExceptionHandler : ResponseEntityExceptionHandler() {
             HttpStatus.FORBIDDEN, ex.message
         )
         return handleExceptionInternal(
-            ex, problem, null,
+            ex, problem, HttpHeaders.EMPTY,
             HttpStatusCode.valueOf(problem.status), webRequest
-        )
+        ) ?: ResponseEntity.internalServerError().build()
     }
 
     @ExceptionHandler(EntityNotFoundException::class)
@@ -157,9 +157,9 @@ class RestGlobalExceptionHandler : ResponseEntityExceptionHandler() {
             HttpStatus.NOT_FOUND, ex.message
         )
         return handleExceptionInternal(
-            ex, problem, null,
+            ex, problem, HttpHeaders.EMPTY,
             HttpStatusCode.valueOf(problem.status), webRequest
-        )
+        ) ?: ResponseEntity.internalServerError().build()
     }
 
     @ExceptionHandler(jakarta.persistence.EntityNotFoundException::class)
@@ -171,9 +171,9 @@ class RestGlobalExceptionHandler : ResponseEntityExceptionHandler() {
             HttpStatus.NOT_FOUND, ex.message
         )
         return handleExceptionInternal(
-            ex, problem, null,
+            ex, problem, HttpHeaders.EMPTY,
             HttpStatusCode.valueOf(problem.status), webRequest
-        )
+        ) ?: ResponseEntity.internalServerError().build()
     }
 
     @ExceptionHandler(CardAlreadyExistsException::class)
@@ -185,9 +185,9 @@ class RestGlobalExceptionHandler : ResponseEntityExceptionHandler() {
             HttpStatus.BAD_REQUEST, ex.message
         )
         return handleExceptionInternal(
-            ex, problem, null,
+            ex, problem, HttpHeaders.EMPTY,
             HttpStatusCode.valueOf(problem.status), webRequest
-        )
+        ) ?: ResponseEntity.internalServerError().build()
     }
 
     @ExceptionHandler(Exception::class)
@@ -199,18 +199,18 @@ class RestGlobalExceptionHandler : ResponseEntityExceptionHandler() {
             HttpStatus.INTERNAL_SERVER_ERROR, ex.message
         )
         return handleExceptionInternal(
-            ex, problem, null,
+            ex, problem, HttpHeaders.EMPTY,
             HttpStatusCode.valueOf(problem.status), webRequest
-        )
+        ) ?: ResponseEntity.internalServerError().build()
     }
 
     override fun handleExceptionInternal(
         ex: Exception,
         body: Any?,
-        headers: HttpHeaders?,
+        headers: HttpHeaders,
         status: HttpStatusCode,
         request: WebRequest
-    ): ResponseEntity<Any> {
+    ): ResponseEntity<Any>? {
         return when {
             status.is5xxServerError -> {
                 // kotlin-logging의 올바른 메서드 시그니처: 예외를 두 번째 파라미터로
@@ -219,11 +219,11 @@ class RestGlobalExceptionHandler : ResponseEntityExceptionHandler() {
                 super.handleExceptionInternal(ex, problem, headers, status, request)
             }
             status.is4xxClientError -> {
-                logger.warn("An exception occurred, which will cause a $status response",ex)
+                logger.warn("An exception occurred, which will cause a $status response", ex)
                 super.handleExceptionInternal(ex, body, headers, status, request)
             }
             else -> {
-                logger.debug("An exception occurred, which will cause a $status response",ex)
+                logger.debug("An exception occurred, which will cause a $status response", ex)
                 super.handleExceptionInternal(ex, body, headers, status, request)
             }
         }

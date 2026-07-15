@@ -1,0 +1,44 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "kotlin",
+            "request": "attach",
+            "name": "Kotlin: Attach (5005)",
+            "port": 5005,
+            "hostName": "localhost",
+            "projectRoot": "${workspaceFolder}",
+            "timeout": 30000
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ConfigServerApplication<io.github.songminkyu-config-server>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "io.github.songminkyu.configserver.ConfigServerApplication",
+            "projectName": "io.github.songminkyu-config-server",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-EurekaServerApplication<io.github.songminkyu-eureka-server>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "io.github.songminkyu.eurekaserver.EurekaServerApplication",
+            "projectName": "io.github.songminkyu-eureka-server",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-MessageApplication<io.github.songminkyu-message>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "io.github.songminkyu.message.MessageApplication",
+            "projectName": "io.github.songminkyu-message",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

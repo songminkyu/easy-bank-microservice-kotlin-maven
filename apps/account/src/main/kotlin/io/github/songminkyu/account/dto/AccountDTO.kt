@@ -5,29 +5,21 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 
 @Schema(name = "Account", description = "Schema to hold Account information")
-@JvmRecord
+// 💡 @JvmRecord를 제거했습니다.
 data class AccountDTO(
-    @JvmField @field:Schema(
-        description = "Account Number of Eazy Bank account",
-        example = "3454433243"
-    ) @param:Schema(
+    // 💡 @JvmField 및 @param:Schema를 제거하여 코드를 단순화했습니다.
+    @field:Schema(
         description = "Account Number of Eazy Bank account",
         example = "3454433243"
     ) val accountNumber: @NotNull Long?,
 
-    @JvmField @field:Schema(
-        description = "Account type of Eazy Bank account",
-        example = "Savings"
-    ) @param:Schema(
+    @field:Schema(
         description = "Account type of Eazy Bank account",
         example = "Savings"
     ) val accountType: @NotBlank String?,
 
-    @JvmField @field:Schema(
-        description = "Eazy Bank branch address",
-        example = "123 NewYork"
-    ) @param:Schema(
+    @field:Schema(
         description = "Eazy Bank branch address",
         example = "123 NewYork"
     ) val branchAddress: @NotBlank String?
-) 
+)

@@ -1,6 +1,6 @@
 package io.github.songminkyu.card.exception
 
-import org.apache.commons.lang.StringUtils
+import org.springframework.util.StringUtils
 import kotlin.reflect.KClass
 
 class EntityNotFoundException(clazz: KClass<*>, vararg searchParamsMap: String) : RuntimeException(

@@ -1,6 +1,6 @@
 package io.github.songminkyu.loan.exception
 
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 
 class EntityNotFoundException(clazz: Class<*>, vararg searchParamsMap: String) : RuntimeException(
     generateMessage(clazz.simpleName, toMap(*searchParamsMap))

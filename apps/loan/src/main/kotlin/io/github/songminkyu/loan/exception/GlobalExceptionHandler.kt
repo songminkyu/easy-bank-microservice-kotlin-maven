@@ -69,7 +69,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
         if (CollectionUtils.isEmpty(methods)) {
             return handleExceptionInternal(
-                ex, problem, null,
+                ex, problem, HttpHeaders.EMPTY,
                 HttpStatusCode.valueOf(problem.status), request
             )
         }
@@ -95,7 +95,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         return handleExceptionInternal(
             ex, problem, headers,
             HttpStatusCode.valueOf(problem.status), request
-        )
+        ) ?: ResponseEntity.internalServerError().build()
     }
 
     @ExceptionHandler(ConstraintViolationException::class)
@@ -108,9 +108,9 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         problem.setProperty(PROBLEM_VIOLATION_KEY, violations)
 
         return handleExceptionInternal(
-            ex, problem, null,
+            ex, problem, HttpHeaders.EMPTY,
             HttpStatusCode.valueOf(problem.status), request
-        )!!
+        )?: ResponseEntity.internalServerError().build()
     }
 
     @ExceptionHandler(AuthenticationException::class)
@@ -120,9 +120,9 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     ): ResponseEntity<Any> {
         val problem = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.message)
         return handleExceptionInternal(
-            ex, problem, null,
+            ex, problem, HttpHeaders.EMPTY,
             HttpStatusCode.valueOf(problem.status), webRequest
-        )!!
+        )?: ResponseEntity.internalServerError().build()
     }
 
     @ExceptionHandler(AccessDeniedException::class)
@@ -132,9 +132,9 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     ): ResponseEntity<Any> {
         val problem = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.message)
         return handleExceptionInternal(
-            ex, problem, null,
+            ex, problem, HttpHeaders.EMPTY,
             HttpStatusCode.valueOf(problem.status), webRequest
-        )!!
+        )?: ResponseEntity.internalServerError().build()
     }
 
     @ExceptionHandler(EntityNotFoundException::class)
@@ -144,9 +144,9 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     ): ResponseEntity<Any> {
         val problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.message)
         return handleExceptionInternal(
-            ex, problem, null,
+            ex, problem, HttpHeaders.EMPTY,
             HttpStatusCode.valueOf(problem.status), webRequest
-        )!!
+        )?: ResponseEntity.internalServerError().build()
     }
 
     @ExceptionHandler(jakarta.persistence.EntityNotFoundException::class)
@@ -156,9 +156,9 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     ): ResponseEntity<Any> {
         val problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.message)
         return handleExceptionInternal(
-            ex, problem, null,
+            ex, problem, HttpHeaders.EMPTY,
             HttpStatusCode.valueOf(problem.status), webRequest
-        )!!
+        )?: ResponseEntity.internalServerError().build()
     }
 
     @ExceptionHandler(LoanAlreadyExistsException::class)
@@ -168,9 +168,9 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     ): ResponseEntity<Any> {
         val problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.message)
         return handleExceptionInternal(
-            ex, problem, null,
+            ex, problem, HttpHeaders.EMPTY,
             HttpStatusCode.valueOf(problem.status), webRequest
-        )!!
+        )?: ResponseEntity.internalServerError().build()
     }
 
     @ExceptionHandler(Exception::class)
@@ -180,15 +180,15 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     ): ResponseEntity<Any> {
         val problem = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, ex.message)
         return handleExceptionInternal(
-            ex, problem, null,
+            ex, problem, HttpHeaders.EMPTY,
             HttpStatusCode.valueOf(problem.status), webRequest
-        )!!
+        )?: ResponseEntity.internalServerError().build()
     }
 
     override fun handleExceptionInternal(
         ex: Exception,
         body: Any?,
-        headers: HttpHeaders?,
+        headers: HttpHeaders,
         statusCode: HttpStatusCode,
         request: WebRequest
     ): ResponseEntity<Any>? {

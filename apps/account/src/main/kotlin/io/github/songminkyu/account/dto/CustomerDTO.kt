@@ -8,28 +8,20 @@ import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 
 @Schema(name = "Customer", description = "Schema to hold Customer and Account information")
-@JvmRecord
+// 💡 @JvmRecord를 제거했습니다.
 data class CustomerDTO(
-    @JvmField @field:Schema(
-        description = "Name of the customer",
-        example = "Eazy Bytes"
-    ) @param:Schema(
+    // 💡 @JvmField 및 어노테이션 대상을 중복 지정하던 부분을 단순화했습니다.
+    @field:Schema(
         description = "Name of the customer",
         example = "Eazy Bytes"
     ) val name: @NotBlank @Size(min = 5, max = 30) String?,
 
-    @JvmField @field:Schema(
-        description = "Email address of the customer",
-        example = "tutor@eazybytes.com"
-    ) @param:Schema(
+    @field:Schema(
         description = "Email address of the customer",
         example = "tutor@eazybytes.com"
     ) val email: @NotBlank @Email String?,
 
-    @JvmField @field:Schema(
-        description = "Mobile Number of the customer",
-        example = "9345432123"
-    ) @param:Schema(
+    @field:Schema(
         description = "Mobile Number of the customer",
         example = "9345432123"
     ) val mobileNumber: @Pattern(
@@ -37,7 +29,6 @@ data class CustomerDTO(
         message = "{jakarta.validation.constraint.MobileNumber.Pattern.message}"
     ) String?,
 
-    @JvmField @field:Schema(description = "Account details of the Customer") @param:Schema(
-        description = "Account details of the Customer"
-    ) val account: @Valid AccountDTO?
-) 
+    @field:Schema(description = "Account details of the Customer") 
+    val account: @Valid AccountDTO?
+)

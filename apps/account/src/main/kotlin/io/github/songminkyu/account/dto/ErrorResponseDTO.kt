@@ -5,21 +5,18 @@ import org.springframework.http.HttpStatus
 import java.time.Instant
 
 @Schema(name = "ErrorResponse", description = "Schema to hold error response information")
-@JvmRecord
+// 💡 @JvmRecord를 제거했습니다.
 data class ErrorResponseDTO(
-    @field:Schema(description = "API path invoked by client") @param:Schema(
-        description = "API path invoked by client"
-    ) val apiPath: String?,
+    // 💡 @param:Schema를 모두 정리하여 구성을 단순화했습니다.
+    @field:Schema(description = "API path invoked by client") 
+    val apiPath: String?,
 
-    @field:Schema(description = "Error code representing the error happened") @param:Schema(
-        description = "Error code representing the error happened"
-    ) val errorCode: HttpStatus?,
+    @field:Schema(description = "Error code representing the error happened") 
+    val errorCode: HttpStatus?,
 
-    @field:Schema(description = "Error message representing the error happened") @param:Schema(
-        description = "Error message representing the error happened"
-    ) val errorMessage: String?,
+    @field:Schema(description = "Error message representing the error happened") 
+    val errorMessage: String?,
 
-    @field:Schema(description = "Time representing when the error happened") @param:Schema(
-        description = "Time representing when the error happened"
-    ) val errorTime: Instant?
+    @field:Schema(description = "Time representing when the error happened") 
+    val errorTime: Instant?
 )

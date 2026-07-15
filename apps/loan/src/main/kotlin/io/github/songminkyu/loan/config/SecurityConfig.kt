@@ -3,7 +3,7 @@ package io.github.songminkyu.loan.config
 import io.github.songminkyu.loan.exception.security.SecurityProblemSupport
 import io.github.songminkyu.loan.security.AuthoritiesConstants
 import io.github.songminkyu.loan.security.oauth2.JwtGrantedAuthorityConverter
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console
+import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest.toH2Console
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.convert.converter.Converter

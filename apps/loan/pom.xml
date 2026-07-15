@@ -219,6 +219,9 @@
                             <goal>kapt</goal>
                         </goals>
                         <configuration>
+                            <aptMode>stubsAndApt</aptMode>
+                            <correctErrorTypes>true</correctErrorTypes>
+                            <includeCompileClasspath>false</includeCompileClasspath>
                             <sourceDirs>
                                 <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
                                 <sourceDir>src/main/kotlin</sourceDir>

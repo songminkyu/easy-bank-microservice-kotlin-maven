@@ -21,7 +21,7 @@ data class AccountFilter(
 
     override fun toPredicate(
             root: Root<Account>,
-    query: CriteriaQuery<*>,
+            query: CriteriaQuery<*>,
             criteriaBuilder: CriteriaBuilder
     ): Predicate? {
             val predicates = LinkedList<Predicate>()

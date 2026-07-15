@@ -1,6 +1,10 @@
 package io.github.songminkyu.account.config;
 
-import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
+// 1. ❌ 기존 static import 제거
+// import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
+
+// 2. 💡 대신 일반 PathRequest 임포트 추가
+import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 
 import io.github.songminkyu.account.exception.security.SecurityProblemSupport;
 import io.github.songminkyu.account.security.AuthoritiesConstants;
@@ -50,7 +54,8 @@ public class SecurityConfig {
                 .accessDeniedHandler(problemSupport))
             .authorizeHttpRequests(authz ->
                 authz
-                    .requestMatchers(toH2Console()).permitAll()
+                    // 3. 💡 클래스명을 붙여서 PathRequest.toH2Console()로 변경
+                    .requestMatchers(PathRequest.toH2Console()).permitAll()
                     .requestMatchers(mvc.pattern("/*/actuator/**")).permitAll()
                     .requestMatchers(HttpMethod.GET).permitAll()
                     .requestMatchers(mvc.pattern("/api/account/**")).hasAuthority(AuthoritiesConstants.ACCOUNT)

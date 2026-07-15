@@ -17,7 +17,7 @@ class CardGraphQlClient(httpGraphQlClientBuilder: HttpGraphQlClient.Builder<*>) 
         return client.documentName("getCardDetails")
             .variable("mobileNumber", mobileNumber)
             .retrieve("card")
-            .toEntity<CardDTO?>(CardDTO::class.java) // possibly also generated or imported if available
+            .toEntity<CardDTO>(CardDTO::class.java) // possibly also generated or imported if available
             .block()
-    }
+    }    
 }
