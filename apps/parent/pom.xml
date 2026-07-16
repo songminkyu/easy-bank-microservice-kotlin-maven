@@ -64,6 +64,7 @@
         <detekt.xmlReportFile>${project.build.directory}/detekt-reports/detekt.xml</detekt.xmlReportFile>
         <sonar.kotlin.detekt.reportPaths>${detekt.xmlReportFile}</sonar.kotlin.detekt.reportPaths>
         <sonar.kotlin.detekt.reportPaths>${detekt.xmlReportFile}</sonar.kotlin.detekt.reportPaths>
+        <jackson-module-kotlin.version>2.22.1</jackson-module-kotlin.version>
     </properties>
     <dependencies>
         <dependency>
