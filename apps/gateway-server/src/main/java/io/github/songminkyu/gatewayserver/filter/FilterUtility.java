@@ -23,7 +23,7 @@ public class FilterUtility {
     }
 
     public boolean hasCorrelationId(HttpHeaders header) {
-        return header.containsKey(CORRELATION_ID);
+        return header.containsHeader(CORRELATION_ID);
     }
 
     public ServerWebExchange setRequestHeader(ServerWebExchange exchange, String name, String value) {
