@@ -18,8 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @Configuration(proxyBeanMethods = false)
 @RequiredArgsConstructor
@@ -31,8 +29,7 @@ public class SecurityConfig {
     private final SecurityProperties securityProperties;
 
     @Bean
-    public UserDetailsService userDetailsService(
-        PasswordEncoder passwordEncoder) {
+    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
         var user = securityProperties.getUser();
         manager.createUser(User.withUsername(user.getName())
@@ -54,10 +51,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.OPTIONS, "/**");
     }
 
-
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http,
-                                           MvcRequestMatcher.Builder mvc) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .cors(Customizer.withDefaults())
             .csrf(AbstractHttpConfigurer::disable)
@@ -67,17 +62,14 @@ public class SecurityConfig {
                         securityProperties.getContentSecurityPolicy()))
             )
             .authorizeHttpRequests(authorize ->
-                // prettier-ignore
+                // MvcRequestMatcher 호출 대신 스프링 기본 최적화 매칭을 사용합니다.
                 authorize
-                    .requestMatchers(mvc.pattern("/actuator/**")).permitAll()
+                    .requestMatchers("/actuator/**").permitAll() 
                     .anyRequest().authenticated()
-            ).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            )
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .httpBasic(httpBasic -> httpBasic.realmName("Eureka Server"));
+            
         return http.build();
-    }
-
-    @Bean
-    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
-        return new MvcRequestMatcher.Builder(introspector);
     }
 }
