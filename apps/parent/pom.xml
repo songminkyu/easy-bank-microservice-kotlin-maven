@@ -33,6 +33,7 @@
 
     <properties>
         <java.version>25</java.version>
+        <lombok.version>1.18.46</lombok.version>
         <kotlin.version>2.4.10</kotlin.version>
         <maven.version>3.9.16</maven.version>
         <spring-cloud.version>2025.1.2</spring-cloud.version>
