@@ -10,20 +10,20 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 @Slf4j
 @RequiredArgsConstructor
+@NullMarked
 public class LoggingInterceptor implements ClientHttpRequestInterceptor {
 
     private final Sink sink;
-
-    @NonNull
+    
     @Override
     public ClientHttpResponse intercept(
-        @NonNull HttpRequest clientRequest,
-        @NonNull byte[] body,
-        @NonNull ClientHttpRequestExecution execution) {
+        HttpRequest clientRequest,
+        byte[] body,
+        ClientHttpRequestExecution execution) {
         try {
             logRequest(clientRequest, body);
             ClientHttpResponse response = execution.execute(clientRequest, body);
