@@ -1,4 +1,4 @@
-package kuke.board.gatewayserver.controller;
+package io.github.songminkyu.gatewayserver.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
